@@ -1,0 +1,32 @@
+{
+    "author": "wally666@wp.pl",
+    "dependencies": {},
+    "keywords": [],
+    "name": "wally.peble.console",
+    "pebble": {
+        "displayName": "Wally.Peble.Console",
+        "enableMultiJS": false,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "fonts/commodore_8.ttf",
+                    "name": "FONT_COMMODORE_8",
+                    "targetPlatforms": null,
+                    "trackingAdjust": -1,
+                    "type": "font"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite"
+        ],
+        "uuid": "16dd9159-f689-4759-abfb-7c994844c9aa",
+        "watchapp": {
+            "watchface": false
+        }
+    },
+    "version": "1.0.0"
+}
