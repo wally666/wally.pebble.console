@@ -42,6 +42,7 @@ void cursor_show() {
     .update = animation_update,
     .teardown = animation_teardown
   };
+  
   animation_set_implementation(animation, &animation_implementation);
   animation_set_play_count(animation, ANIMATION_PLAY_COUNT_INFINITE);
   animation_schedule(animation);

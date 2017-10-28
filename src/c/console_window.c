@@ -3,6 +3,7 @@
 #include "mini-printf.h"
 #include "console_window.h"
 #include "console_cursor.h"
+#include "connection.h"
 
 #define MAX_CURSOR_X 20
 #define MAX_CURSOR_Y 30
@@ -13,6 +14,7 @@ GFont font;
 char *text = NULL;
 size_t text_len = 0;
 ConsoleCursor cursor;
+Connection connection;
 
 void append(const char*	fmt,	...) {
   size_t buffer_size = MAX_CURSOR_X * MAX_CURSOR_Y;
@@ -32,9 +34,14 @@ void append(const char*	fmt,	...) {
   cursor.set_position(0, 17);
 }
 
+void message_received_handler(const char *message)
+{
+  APP_LOG(APP_LOG_LEVEL_DEBUG, message);
+}
+
 void window_load(Window *window) {
   // We will add the creation of the Window's elements here soon!
-  APP_LOG(APP_LOG_LEVEL_ERROR, "window_load");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "window_load");
   
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_frame(window_layer);
@@ -54,14 +61,21 @@ void window_load(Window *window) {
   
   cursor = console_cursor_create(text_layer_get_layer(text_layer));
   cursor.show();
+  
+  connection = connection_create(message_received_handler);
+  //connection.open();
+  
+  connection.send("testMessage");
+  
+  connection.message_received_handler("test22");
 }
 
 void window_unload(Window *window) {
   //We will safely destroy the Window's elements here!
-  APP_LOG(APP_LOG_LEVEL_ERROR, "window_unload");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "window_unload");
 
   // Destroy app elements here
-  APP_LOG(APP_LOG_LEVEL_ERROR, "deinit_console_window");
+  connection.destroy();
   console_cursor_destroy(cursor);
   text_layer_destroy(text_layer);
   fonts_unload_custom_font(font);
@@ -70,7 +84,7 @@ void window_unload(Window *window) {
 }
 
 void show(void) {
-  APP_LOG(APP_LOG_LEVEL_ERROR, "show_console_window");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "show_console_window");
  
   window = window_create();
   window_set_window_handlers(window, (WindowHandlers) {
@@ -83,12 +97,12 @@ void show(void) {
 }
 
 void hide(void) {
-  APP_LOG(APP_LOG_LEVEL_ERROR, "hide_console_window");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "hide_console_window");
   window_stack_remove(window, true);
 }
 
 void clear(void) {
-  APP_LOG(APP_LOG_LEVEL_ERROR, "clear");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "clear");
   cursor.set_position(0, 0);
   text_len = 0;
   text[0] = '\0';
