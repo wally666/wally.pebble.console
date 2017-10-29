@@ -14,9 +14,6 @@ void animation_setup(Animation *animation) {
 
 void animation_update(Animation *animation, const AnimationProgress progress) {
   // Animate some completion variable
-  //int animation_percent = ((int)progress * 100) / ANIMATION_NORMALIZED_MAX;
-  //APP_LOG(APP_LOG_LEVEL_INFO, "Animation progress: %d%%", animation_percent);
-  //APP_LOG(APP_LOG_LEVEL_INFO, "Progress: %d", (int)progress);
   if (progress > 65535 / 2 && isCursorHidden)
   {
     isCursorHidden = !isCursorHidden;
