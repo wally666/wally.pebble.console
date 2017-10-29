@@ -23,10 +23,16 @@ void init(void) {
     
   for (int i = 32; i < 128; i++)
   {
-    consoleWindow.append("%c,", i, i);
+    consoleWindow.append("%c,", i);
   }
   
   consoleWindow.append("\nREADY.\n");
+  
+  //consoleWindow.clear();
+  //consoleWindow.append("");
+  //consoleWindow.append("1\n11111111111111111123");
+  consoleWindow.append("1234567890");
+  consoleWindow.append("111111111111111111123\n\nREADY.\n");
 }
 
 void deinit(void) {

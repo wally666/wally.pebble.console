@@ -2,8 +2,8 @@
 #include "console_cursor.h"
 
 TextLayer *cursor_layer;
-uint8_t cursor_x = 0;
-uint8_t cursor_y = 0;
+uint8_t cursor_x; // = 0;
+uint8_t cursor_y; // = 0;
 Animation *animation;
 AnimationImplementation animation_implementation;
 bool isCursorHidden = true;
@@ -49,7 +49,7 @@ void set_position(uint8_t x, uint8_t y) {
   cursor_x = x;
   cursor_y = y;
   
-  layer_set_bounds((Layer *)cursor_layer, GRect(cursor_x * 4, cursor_y * 4, 8, 8));
+  layer_set_bounds((Layer *)cursor_layer, GRect((cursor_x + 0) * 3.5, cursor_y * 4, 8, 8));
 }
 
 ConsoleCursor console_cursor_create(Layer * parent_layer) {
@@ -60,7 +60,9 @@ ConsoleCursor console_cursor_create(Layer * parent_layer) {
   
   return (ConsoleCursor) {
     .show = cursor_show,
-    .set_position = set_position
+    .set_position = set_position,
+    .x = &cursor_x,
+    .y = &cursor_y
   };
 }
 

@@ -25,13 +25,57 @@ void append(const char*	fmt,	...) {
   mini_vsnprintf(buffer, buffer_size, fmt, va);
  	va_end(va);
 
-  text = strcat(text, buffer);
+  //text = strcat(text, buffer);
   
+  //
+//  APP_LOG(APP_LOG_LEVEL_ERROR, "x=%d, y=%d", *cursor.x, *cursor.y);
+  uint8_t x = *cursor.x;
+  uint8_t y = *cursor.y;
+  
+  char *t = &text[y * MAX_CURSOR_X + x + y];
+  char *c = buffer;
+  while(*c!='\0') {
+    switch (*c)
+    {
+      case '\n':
+        for (int i = x; i < MAX_CURSOR_X; i++) {
+          *t=' ';
+          t++;
+          x++;
+        }
+        break;
+      default:
+        *t=*c;
+        t++;
+        x++;
+        break;
+    }
+    
+    //t++;
+    c++;
+    
+    if (x >= MAX_CURSOR_X) {
+      APP_LOG(APP_LOG_LEVEL_ERROR, "x=%d, y=%d, t=%c, c=%c", x, y, *t, *c);
+    
+      x = 0;
+      y++;
+      *t='\n';
+      t++;
+    }
+    if (y > MAX_CURSOR_Y) {
+      y = MAX_CURSOR_Y;
+      //... cut first line
+    }   
+  }
+  
+  *t='\0';
+    
   // Update
   text_layer_set_text(text_layer, text);
   //layer_mark_dirty(text_layer_get_layer(text_layer));
   
-  cursor.set_position(0, 17);
+  cursor.set_position(x, y);
+  APP_LOG(APP_LOG_LEVEL_ERROR, "text=%s", text);    
 }
 
 void message_received_handler(const char *message)

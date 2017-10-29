@@ -13,6 +13,9 @@ typedef struct ConsoleCursor {
   //! @param x A column index
   //! @param y A row index
   void (*set_position)(uint8_t x, uint8_t y);
+  
+  uint8_t *x;
+  uint8_t *y;
 } ConsoleCursor;
 
 ConsoleCursor console_cursor_create(Layer * parent_layer);
