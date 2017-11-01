@@ -7,7 +7,7 @@ Connection get_connection(void *context) {
 }
 
 static void inbox_received_handler(DictionaryIterator *iterator, void *context) {
-  get_connection(context).message_received_handler("received 3");
+  //get_connection(context).message_received_handler("received 3");
   
   // Get the first pair
   Tuple *t = dict_read_first(iterator);
@@ -28,11 +28,13 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
         //break;
       default:
         APP_LOG(APP_LOG_LEVEL_INFO, "Message received. Key: '%d'", (int)t->key);
+        vibes_short_pulse();  
+        /*
         Connection connection = (*(Connection*)context);
         if (connection.message_received_handler) {
           connection.message_received_handler("xxx");
         }
-        
+        */
         break;
     }
 
@@ -43,12 +45,12 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
 
 static void inbox_dropped_handler(AppMessageResult reason, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Message dropped!");
-  get_connection(context).message_received_handler("received 5");
+  get_connection(context).message_received_handler("TEST: 5");
 }
 
 static void outbox_failed_handler(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Outbox send failed!");
-  get_connection(context).message_received_handler("received 4");
+  get_connection(context).message_received_handler("TEST: 4");
 }
 
 void outbox_sent_handler(DictionaryIterator *iterator, void *context) {
@@ -65,16 +67,17 @@ void destroy() {
 }
 
 void send(const char *message) {
-  uint32_t key = 1;
-  
+  //uint32_t key = 1;
   DictionaryIterator *iter;
   app_message_outbox_begin(&iter);
   //dict_write_int(iter, key, &message, sizeof(int), true);
+  //dict_write_
   app_message_outbox_send();
 }
 
 void open_connection(void *context) {
-  get_connection(context).message_received_handler("received 1");
+  // OK:
+  //get_connection(context).message_received_handler("TEST: 1");
 
   // Register callbacks  
   app_message_set_context(context);
@@ -91,7 +94,6 @@ void open_connection(void *context) {
 Connection connection_create(MessageReceivedHandler message_received_handler)
 {
   Connection connection = (Connection) {
-    //.open = open_connection,
     .send = send,
     .message_received_handler = message_received_handler,
     .destroy = destroy

@@ -3,84 +3,66 @@
 #include "mini-printf.h"
 #include "console_window.h"
 #include "console_cursor.h"
-#include "connection.h"
 
 #define MAX_CURSOR_X 20
-#define MAX_CURSOR_Y 30
+#define MAX_CURSOR_Y 20
 
 Window *window;
 TextLayer *text_layer;
 GFont font;
-char *text = NULL;
-size_t text_len = 0;
+char *text;
 ConsoleCursor cursor;
-Connection connection;
 
 void append(const char*	fmt,	...) {
   size_t buffer_size = MAX_CURSOR_X * MAX_CURSOR_Y;
-  char buffer[buffer_size];
+  char buffer[buffer_size * 2];
 
   va_list va;
 	va_start(va, fmt);
   mini_vsnprintf(buffer, buffer_size, fmt, va);
  	va_end(va);
 
-  //text = strcat(text, buffer);
-  
-  //
-//  APP_LOG(APP_LOG_LEVEL_ERROR, "x=%d, y=%d", *cursor.x, *cursor.y);
   uint8_t x = *cursor.x;
   uint8_t y = *cursor.y;
   
   char *t = &text[y * MAX_CURSOR_X + x + y];
   char *c = buffer;
-  while(*c!='\0') {
+  while(*c) {
     switch (*c)
     {
       case '\n':
-        for (int i = x; i < MAX_CURSOR_X; i++) {
-          *t=' ';
-          t++;
-          x++;
+        for (; x < MAX_CURSOR_X; x++) {
+          *t++=' ';
         }
         break;
       default:
-        *t=*c;
-        t++;
+        *t++=*c;
         x++;
         break;
     }
     
-    //t++;
     c++;
-    
     if (x >= MAX_CURSOR_X) {
-      APP_LOG(APP_LOG_LEVEL_ERROR, "x=%d, y=%d, t=%c, c=%c", x, y, *t, *c);
-    
       x = 0;
       y++;
-      *t='\n';
-      t++;
+      *t++='\n';
+      if (*c=='\n')
+        c++;
     }
     if (y > MAX_CURSOR_Y) {
       y = MAX_CURSOR_Y;
-      //... cut first line
+      //... cut the first line
+      text += MAX_CURSOR_X + 1;
     }   
   }
   
   *t='\0';
-    
+  
   // Update
   text_layer_set_text(text_layer, text);
   //layer_mark_dirty(text_layer_get_layer(text_layer));
-  
+    
   cursor.set_position(x, y);
-  APP_LOG(APP_LOG_LEVEL_ERROR, "text=%s", text);    
-}
-
-void message_received_handler(const char *message)
-{
-  APP_LOG(APP_LOG_LEVEL_DEBUG, message);
 }
 
 void window_load(Window *window) {
@@ -101,17 +83,10 @@ void window_load(Window *window) {
   text_layer_set_font(text_layer, font);
   layer_add_child(window_layer, text_layer_get_layer(text_layer));
   
-  text = malloc(MAX_CURSOR_Y * (MAX_CURSOR_X + 1));
+  text = malloc(MAX_CURSOR_Y * MAX_CURSOR_X * 2);
   
   cursor = console_cursor_create(text_layer_get_layer(text_layer));
   cursor.show();
-  
-  connection = connection_create(message_received_handler);
-  //connection.open();
-  
-  connection.send("testMessage");
-  
-  connection.message_received_handler("test22");
 }
 
 void window_unload(Window *window) {
@@ -119,7 +94,6 @@ void window_unload(Window *window) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "window_unload");
 
   // Destroy app elements here
-  connection.destroy();
   console_cursor_destroy(cursor);
   text_layer_destroy(text_layer);
   fonts_unload_custom_font(font);
@@ -148,7 +122,6 @@ void hide(void) {
 void clear(void) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "clear");
   cursor.set_position(0, 0);
-  text_len = 0;
   text[0] = '\0';
   layer_mark_dirty(text_layer_get_layer(text_layer));
 }
