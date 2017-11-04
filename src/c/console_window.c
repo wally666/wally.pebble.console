@@ -23,10 +23,10 @@ void append(const char*	fmt,	...) {
  	va_end(va);
 
   uint8_t x = *cursor.x;
-  uint8_t y = *cursor.y;
-  
+  uint8_t y = *cursor.y;  
   char *t = &text[y * MAX_CURSOR_X + x + y];
   char *c = buffer;
+  
   while(*c) {
     switch (*c)
     {
@@ -49,6 +49,7 @@ void append(const char*	fmt,	...) {
       if (*c=='\n')
         c++;
     }
+    
     if (y > MAX_CURSOR_Y) {
       y = MAX_CURSOR_Y;
       //... cut the first line
@@ -60,8 +61,7 @@ void append(const char*	fmt,	...) {
   
   // Update
   text_layer_set_text(text_layer, text);
-  //layer_mark_dirty(text_layer_get_layer(text_layer));
-    
+  //layer_mark_dirty(text_layer_get_layer(text_layer));    
   cursor.set_position(x, y);
 }
 

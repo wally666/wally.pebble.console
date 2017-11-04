@@ -11,6 +11,13 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/menu_icon",
+                    "menuIcon": true,
+                    "name": "IMAGE_MENU_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
                     "file": "fonts/commodore_8.ttf",
                     "name": "FONT_COMMODORE_8",
                     "targetPlatforms": null,

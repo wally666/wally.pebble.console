@@ -5,10 +5,10 @@
 ConsoleWindow consoleWindow;
 Connection connection;
 
-void message_received_handler(const char *message)
+void message_received_handler(const int key, const char *message)
 {
   APP_LOG(APP_LOG_LEVEL_DEBUG, message);
-  consoleWindow.append(message);
+  consoleWindow.append("MESSAGE '%d' RECEIVED:\n%s\n", key, message);
 }
 
 void init(void) {
@@ -19,9 +19,9 @@ void init(void) {
   // Test
   consoleWindow.clear();
   consoleWindow.append("  *** C64 BASIC ***\n");
-  size_t ram_free = heap_bytes_free();
-  size_t ram_used = heap_bytes_used();
-  consoleWindow.append(" %3.2fK RAM, %dB FREE, %dB USED\n", (ram_free + ram_used) / 1024, ram_free, ram_used);
+  size_t ram_free = heap_bytes_free() / 1024;
+  size_t ram_used = heap_bytes_used() / 1024;
+  consoleWindow.append("%dK/%dK RAM FREE\n\n", ram_free, ram_free + ram_used);
   consoleWindow.append("READY.\n");
   
   AppLaunchReason appLaunchReason = launch_reason();
@@ -29,19 +29,12 @@ void init(void) {
   
   time_t now = time(NULL);
   struct tm *tick_time = localtime(&now);
-  consoleWindow.append("TIME: %02d:%02d\n", tick_time->tm_hour, tick_time->tm_min);
+  consoleWindow.append("TIME: %02d:%02d\n\n", tick_time->tm_hour, tick_time->tm_min);
   /* 
   for (int i = 1; i < 128; i++)
   {
     consoleWindow.append("%c,", i);
   }
-  */
-  /*
-  consoleWindow.append("\n10 PRINT HELLO WORD!\n");
-  consoleWindow.append("LIST 10\n");
-  consoleWindow.append("10 PRINT HELLO WORD!\n");
-  consoleWindow.append("RUN\n");
-  consoleWindow.append("HELLO WORD!\n");
   */
   consoleWindow.append("READY.\n");
   consoleWindow.append("LOAD \"BATTERY STATE\"\n");
@@ -49,8 +42,7 @@ void init(void) {
   consoleWindow.append("BATTERY STATE=%d%%\n", (int)battery.charge_percent);
   
   connection = connection_create(message_received_handler);
-  connection.send("TEST: SEND");
-  connection.message_received_handler("TEST: RECEIVED");
+  // connection.send("TEST: SEND");
 }
 
 void deinit(void) {

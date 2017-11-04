@@ -2,8 +2,8 @@
 #include "console_cursor.h"
 
 TextLayer *cursor_layer;
-uint8_t cursor_x; // = 0;
-uint8_t cursor_y; // = 0;
+uint8_t cursor_x;
+uint8_t cursor_y;
 Animation *animation;
 AnimationImplementation animation_implementation;
 bool isCursorHidden = true;
