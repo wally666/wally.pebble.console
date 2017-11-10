@@ -2,9 +2,9 @@
     "author": "wally666@wp.pl",
     "dependencies": {},
     "keywords": [],
-    "name": "wally.peble.console",
+    "name": "wally.pebble",
     "pebble": {
-        "displayName": "Wally.Peble.Console",
+        "displayName": "Wally.Pebble.Console",
         "enableMultiJS": false,
         "messageKeys": [],
         "projectType": "native",
